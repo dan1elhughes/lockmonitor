@@ -1,0 +1,44 @@
+.BigLock.closed {
+	.circle {
+		background-color: darkgreen;
+	}
+	span.closed {
+		opacity: 1;
+	}
+}
+
+.BigLock.open {
+	.circle {
+		background-color: darkorange;
+	}
+	span.open {
+		opacity: 1;
+	}
+}
+
+.BigLock {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+
+	.circle {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		border: 2px solid white;
+		border-radius: 100%;
+		padding: 5rem;
+		height: 100px;
+		width: 100px;
+		transition: background-color 0.25s ease-in;
+
+		span {
+			transition: opacity 0.25s ease-in;
+			font-size: 5rem;
+			color: white;
+			opacity: 0;
+			position: absolute;
+		}
+	}
+}
