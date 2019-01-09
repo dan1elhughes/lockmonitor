@@ -7,7 +7,10 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "parcel src/index.html --port 8080 --open",
 		"build": "parcel build src/index.html",
-		"deploy": "npm run build && firebase deploy"
+		"tay": "tay -i src/tokens.yaml -o src/styles/tokens.css",
+		"deploy": "npm run build && firebase deploy",
+		"prestart": "npm run tay",
+		"prebuild": "npm run tay"
 	},
 	"repository": {
 		"type": "git",
@@ -32,6 +35,7 @@
 		"dayjs": "^1.7.8",
 		"firebase": "^5.7.2",
 		"hyperapp": "^1.2.9",
-		"material-icons": "^0.3.0"
+		"material-icons": "^0.3.0",
+		"tay": "^2.3.2"
 	}
 }

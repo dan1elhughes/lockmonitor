@@ -10,11 +10,34 @@ import BigLock from "./components/BigLock";
 import Container from "./components/Container";
 import History from "./components/History";
 import Nav from "./components/Nav";
+import LockName from "./components/LockName";
+import LockState from "./components/LockState";
+import Row from "./components/Row";
 
 const initialState = {
 	locks: [],
 	devLocked: true,
 	err: null,
+};
+
+function randomDateBetween(start, end) {
+	return new Date(
+		start.getTime() + Math.random() * (end.getTime() - start.getTime())
+	);
+}
+
+const createNewData = () => {
+	const today = new Date();
+	const aWeekAgo = new Date(Date.now() - 24 * 3600 * 7000);
+
+	const timestamp = +randomDateBetween(aWeekAgo, today);
+
+	const locked = Math.random() >= 0.5;
+
+	return {
+		timestamp,
+		locked,
+	};
 };
 
 const actions = {
@@ -29,9 +52,11 @@ const actions = {
 
 	onFirebaseError: err => ({ err }),
 
-	tick: () => state => ({
+	onToggleDevLock: () => state => ({
 		devLocked: !state.devLocked,
 	}),
+
+	onCreateSampledata: () => database.ref("locks").push(createNewData()),
 };
 
 const selectors = {
@@ -41,10 +66,16 @@ const selectors = {
 
 const view = (state, actions) => (
 	<div>
-		<Nav photoURL={state.myPhoto || ""} onSignout={actions.onSignout} />
 		<Container>
-			<BigLock locked={state.isCurrentlyLocked} />
+			<Row>
+				<BigLock locked={state.devLocked} onclick={actions.onToggleDevLock} />
+			</Row>
+			<Row>
+				<LockName>Front door</LockName>
+				<LockState>{state.devLocked ? "Locked" : "Unlocked"}</LockState>
+			</Row>
 			<History locks={state.locks} />
+			<button onclick={actions.onCreateSampledata}>Add sample data</button>
 		</Container>
 	</div>
 );
@@ -53,8 +84,6 @@ const wrappedView = (state, actions) =>
 	view({ ...state, ...createDerivedState(selectors, state) }, actions);
 
 const instance = app(initialState, actions, wrappedView, document.body);
-
-setInterval(instance.tick, 1000);
 
 auth(instance.onFirebaseAuth);
 database

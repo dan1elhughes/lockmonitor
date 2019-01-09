@@ -2,13 +2,10 @@ import { h } from "hyperapp";
 
 import "./styles.scss";
 
-const getLockPhrase = locked => (locked ? "closed" : "open");
-
-const BigLock = ({ locked }) => (
-	<div className={`BigLock ${getLockPhrase(locked)}`}>
-		<div className="circle">
-			<span className="material-icons closed">lock</span>
-			<span className="material-icons open">lock_open</span>
+const BigLock = ({ locked, onclick }) => (
+	<div className="BigLock" onclick={onclick}>
+		<div className={`circle ${locked ? "" : "un"}locked`}>
+			<div className="bar" />
 		</div>
 	</div>
 );

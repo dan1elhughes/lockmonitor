@@ -1,44 +1,48 @@
-.BigLock.closed {
-	.circle {
-		background-color: darkgreen;
-	}
-	span.closed {
-		opacity: 1;
-	}
-}
-
-.BigLock.open {
-	.circle {
-		background-color: darkorange;
-	}
-	span.open {
-		opacity: 1;
-	}
-}
-
 .BigLock {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
+	cursor: pointer;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 
 	.circle {
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
-		border: 2px solid white;
 		border-radius: 100%;
 		padding: 5rem;
 		height: 100px;
 		width: 100px;
-		transition: background-color 0.25s ease-in;
+		transition: background 0.25s;
+		position: relative;
+		box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
 
-		span {
-			transition: opacity 0.25s ease-in;
-			font-size: 5rem;
-			color: white;
-			opacity: 0;
+		&.locked {
+			background: var(--color-positive);
+		}
+
+		&.unlocked {
+			background: var(--color-negative);
+			.bar {
+				transform: rotate(90deg);
+			}
+		}
+
+		.bar {
 			position: absolute;
+			height: 1rem;
+			width: 75%;
+			background: white;
+			border-radius: 5px;
+			transform: rotate(0deg);
+			transition: transform 0.25s;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.19);
 		}
 	}
 }

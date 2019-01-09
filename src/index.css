@@ -1,3 +1,4 @@
 @import "material-icons/iconfont/material-icons.css";
-@import "./reset.css";
-@import "./theme.css";
+@import "./styles/reset.css";
+@import "./styles/tokens.css";
+@import "./styles/theme.css";
