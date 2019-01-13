@@ -1,4 +1,8 @@
 .Row {
 	padding: 2rem 0;
-	border-bottom: 1px solid grey;
+	text-align: center;
+
+	pre {
+		text-align: initial;
+	}
 }

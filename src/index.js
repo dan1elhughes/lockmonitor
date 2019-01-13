@@ -7,24 +7,20 @@ import auth from "./auth";
 import createDerivedState from "./util/createDerivedState";
 
 import BigLock from "./components/BigLock";
+import Button from "./components/Button";
 import Container from "./components/Container";
 import History from "./components/History";
+import LockInfo from "./components/LockInfo";
 import Nav from "./components/Nav";
-import LockName from "./components/LockName";
-import LockState from "./components/LockState";
 import Row from "./components/Row";
 
 const initialState = {
 	locks: [],
-	devLocked: true,
 	err: null,
 };
 
-function randomDateBetween(start, end) {
-	return new Date(
-		start.getTime() + Math.random() * (end.getTime() - start.getTime())
-	);
-}
+const randomDateBetween = (start, end) =>
+	new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 
 const createNewData = () => {
 	const today = new Date();
@@ -45,37 +41,41 @@ const actions = {
 	onSignout: () => firebase.auth().signOut(),
 
 	onFirebaseUpdate: snapshot => ({
-		locks: Object.entries(snapshot.val())
+		locks: Object.entries(snapshot.val() || {})
 			.map(([id, val]) => ({ id, ...val }))
 			.sort((a, b) => b.timestamp - a.timestamp),
 	}),
 
 	onFirebaseError: err => ({ err }),
 
-	onToggleDevLock: () => state => ({
-		devLocked: !state.devLocked,
-	}),
-
-	onCreateSampledata: () => database.ref("locks").push(createNewData()),
+	onCreateSampleData: () => {
+		database.ref("locks").push(createNewData());
+	},
 };
 
 const selectors = {
-	isCurrentlyLocked: createAccessor("locks.0.locked"),
+	last: state => createAccessor("locks.0", state) || {},
 	myPhoto: createAccessor("user.photoURL"),
 };
 
 const view = (state, actions) => (
 	<div>
 		<Container>
+			<Row>{state.locks.length} locks</Row>
 			<Row>
-				<BigLock locked={state.devLocked} onclick={actions.onToggleDevLock} />
+				<BigLock locked={state.last.locked} onclick={actions.onToggleDevLock} />
 			</Row>
 			<Row>
-				<LockName>Front door</LockName>
-				<LockState>{state.devLocked ? "Locked" : "Unlocked"}</LockState>
+				<LockInfo locked={state.last.locked} timestamp={state.last.timestamp} />
 			</Row>
-			<History locks={state.locks} />
-			<button onclick={actions.onCreateSampledata}>Add sample data</button>
+			<Row>
+				<Button onclick={actions.onCreateSampleData}>Add sample data</Button>
+			</Row>
+			<Row>
+				<pre>
+					<code>{JSON.stringify(state, null, 4)}</code>
+				</pre>
+			</Row>
 		</Container>
 	</div>
 );
