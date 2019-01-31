@@ -17,6 +17,8 @@ import Row from "./components/Row";
 const initialState = {
 	locks: [],
 	err: null,
+	devLocked: true,
+	overwrite: false,
 };
 
 const randomDateBetween = (start, end) =>
@@ -51,6 +53,11 @@ const actions = {
 	onCreateSampleData: () => {
 		database.ref("locks").push(createNewData());
 	},
+
+	onToggleDevLock: () => ({ devLocked }) => ({
+		overwrite: true,
+		devLocked: !devLocked,
+	}),
 };
 
 const selectors = {
@@ -61,9 +68,18 @@ const selectors = {
 const view = (state, actions) => (
 	<div>
 		<Container>
-			<Row>{state.locks.length} locks</Row>
+			{state.err && (
+				<Row>
+					<pre>
+						<code>{JSON.stringify(state.err, null, 4)}</code>
+					</pre>
+				</Row>
+			)}
 			<Row>
-				<BigLock locked={state.last.locked} onclick={actions.onToggleDevLock} />
+				<BigLock
+					locked={state.overwrite ? state.devLocked : state.last.locked}
+					onclick={actions.onToggleDevLock}
+				/>
 			</Row>
 			<Row>
 				<LockInfo locked={state.last.locked} timestamp={state.last.timestamp} />
@@ -72,9 +88,7 @@ const view = (state, actions) => (
 				<Button onclick={actions.onCreateSampleData}>Add sample data</Button>
 			</Row>
 			<Row>
-				<pre>
-					<code>{JSON.stringify(state, null, 4)}</code>
-				</pre>
+				<History locks={state.locks} />
 			</Row>
 		</Container>
 	</div>

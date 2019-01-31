@@ -3,8 +3,8 @@ export default (selectors, state) =>
 		(acc, [name, fn]) => ({
 			...acc,
 			get [name]() {
-				return selectors[name](state);
-			}
+				return fn(state);
+			},
 		}),
 		{}
 	);
